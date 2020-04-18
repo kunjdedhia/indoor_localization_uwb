@@ -1,5 +1,6 @@
 from scipy.io import loadmat
 import numpy as np
+import pandas as pd
 
 fileRef = {'time': '/T_stmp.mat', 'bin': 'range_bins.mat', 'mag': 'envNoClutterscans.mat'}
 radarRef = {'103': {'time': 'T_stmp_1033', 'bin': 'Rbin_1033', 'mag': 'envNoClutterscansV_1033'}, 
@@ -26,4 +27,11 @@ for participant in ['participant1', 'participant2']:
 
             radarData[radar]['time'] = radarData[radar]['time'][idx1:idx2+1]
             radarData[radar]['mag'] = radarData[radar]['mag'][idx1:idx2+1, :]
+
+            series = pd.DataFrame(data = radarData[radar]['mag'], index = radarData[radar]['time'])
+            series.index = pd.to_datetime(series.index, unit='s')
+            series = series.resample('21.5L').mean()
             
+        break
+    break
+
