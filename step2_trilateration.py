@@ -2,6 +2,8 @@ from scipy.io import loadmat
 import numpy as np
 import pandas as pd
 import math
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 def triLat(r1, r2, r3):
