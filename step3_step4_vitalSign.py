@@ -4,6 +4,7 @@ import math
 import matplotlib.pyplot as plt
 from scipy.fftpack import fft
 
+rangeRef = {'Radar 1': [0.8128, 1.8161], 'Radar 2': [1.3716, 3.0861], 'Radar 3': [1.1303, 2.8448]}
 fileRef = {'time': '/t_stmp.mat', 'bin': 'range_bins.mat', 'mag': 'rawscans.mat'}
 radarRef = {'time': 't_stmp', 'bin': 'range_bins', 'mag': 'rawscans'}
 signalTrimRef = {
@@ -12,18 +13,18 @@ signalTrimRef = {
                 'BR_st2': {'browsing': [20, 29], 'fetal_left': [15, 60], 'fetal_right': [10, 40], 'freefall': [37, 55], 'left_turned': [33, 50], 'right_turned': [10, 35], 'soldier': [21, 60]} 
                 },
                 'Radar 2': {
-                'BR_st1': {'fetal_left': [26, 60], 'fetal_right': [6, 60], 'soldier': [26, 55]}, 
-                'BR_st2': {'fetal_left': [10, 55], 'fetal_right': [10, 55], 'freefall': [0, 45], 'left_turned': [0, 40], 'right_turned': [0, 40], 'soldier': [15, 60]} 
+                'BR_st1': {'fetal_left': [26, 60], 'fetal_right': [6, 60], 'left_turned': [10, 60], 'right_turned': [10, 60], 'soldier': [26, 55]}, 
+                'BR_st2': {'browsing': [17, 29], 'fetal_left': [25, 55], 'fetal_right': [15, 55], 'freefall': [20, 75], 'left_turned': [10, 55], 'right_turned': [0, 40], 'soldier': [15, 60]} 
                 },
                 'Radar 3': {
-                'BR_st1': {'browsing': [26, 55], 'fetal_right': [10, 60], 'left_turned': [20, 60], 'right_turned': [10, 60]}, 
-                'BR_st2': {'browsing': [20, 29], 'fetal_left': [15, 60], 'fetal_right': [10, 40], 'freefall': [37, 55], 'left_turned': [33, 50], 'right_turned': [10, 35], 'soldier': [21, 60]} 
+                'BR_st1': {'browsing': [30, 55], 'fetal_left': [10, 60], 'fetal_right': [25, 60], 'freefall': [10, 55], 'left_turned': [10, 60], 'right_turned': [10, 60], 'soldier': [10, 55]}, 
+                'BR_st2': {'fetal_left': [25, 55], 'fetal_right': [10, 45], 'freefall': [20, 75], 'left_turned': [15, 50], 'right_turned': [5, 30], 'soldier': [30, 60]} 
                 }
                 }
 
 pre_path = './DataSet/Vital Sign/'
-for participant in ['BR_st1', 'BR_st2']:
-    for radar in ['Radar 1', 'Radar 2', 'Radar 3']:
+for radar in ['Radar 1', 'Radar 2', 'Radar 3']:
+    for participant in ['BR_st1', 'BR_st2']:
         for pattern in ['browsing', 'fetal_left', 'fetal_right', 'freefall', 'left_turned', 'right_turned', 'soldier']:
             radarData = {}
             for files in fileRef:
@@ -31,7 +32,7 @@ for participant in ['BR_st1', 'BR_st2']:
                 if files == 'time' or files == 'bin':
                     radarData[files] = radarData[files].flatten()
             
-            binIdx = np.where(np.logical_and(radarData['bin'] > 0.8128, radarData['bin'] < 1.8161))
+            binIdx = np.where(np.logical_and(radarData['bin'] > rangeRef[radar][0], radarData['bin'] < rangeRef[radar][1]))
             signal = [] 
             iterations = np.shape(radarData['mag'])[0]
             for i in range(iterations):
@@ -44,9 +45,9 @@ for participant in ['BR_st1', 'BR_st2']:
             signal = np.asarray(signal)
             trimStart = 0
             trimEnd = timeElapsed
-            if pattern in signalTrimRef[participant]:
-                trimStart = signalTrimRef[participant][pattern][0]
-                trimEnd = signalTrimRef[participant][pattern][1]
+            if pattern in signalTrimRef[radar][participant]:
+                trimStart = signalTrimRef[radar][participant][pattern][0]
+                trimEnd = signalTrimRef[radar][participant][pattern][1]
                 iterStart = trimStart*iterations//timeElapsed
                 iterEnd = trimEnd*iterations//timeElapsed
                 signal = signal[iterStart: iterEnd + 1]
@@ -72,5 +73,6 @@ for participant in ['BR_st1', 'BR_st2']:
             plt.xlabel('Frequency (breaths per min)')
             plt.ylabel('Magnitude')
             plt.subplots_adjust(hspace=0.5)
-            plt.suptitle('Participant: ' + participant + '  Activity: ' + pattern)
-            plt.savefig('./step3_vital_sign/Vital_Sign_Radar1 ' + participant + '_' + pattern + '.png', bbox_inches="tight")
+            plt.suptitle(radar + ' Participant: ' + participant + '  Activity: ' + pattern)
+            plt.savefig('./vital_sign_plots/' + radar + ' ' + participant + '_' + pattern + '.png', bbox_inches="tight")
+            plt.close()
