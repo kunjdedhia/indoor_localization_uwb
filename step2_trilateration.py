@@ -60,7 +60,7 @@ for participant in ['participant1', 'participant2']:
 
         window_size = 12
         window_shift = 6
-        threshold = 60000
+        threshold = 600000
         minIterations = min([np.shape(timeSyncData['103'])[0], np.shape(timeSyncData['108'])[0], np.shape(timeSyncData['109'])[0]])
         iterations = math.floor((minIterations - window_size)/window_shift) + 1
         for i in range(iterations):
@@ -96,5 +96,3 @@ for participant in ['participant1', 'participant2']:
         plt.xlabel('R 109 at 1.016m')
         plt.ylabel('R 108 at 2.032m')
         plt.savefig(participant + ' ' + pattern + '.png')
-
-
