@@ -60,7 +60,7 @@ for participant in ['participant1', 'participant2']:
 
         window_size = 12
         window_shift = 6
-        threshold = 600000
+        threshold = 50000
         minIterations = min([np.shape(timeSyncData['103'])[0], np.shape(timeSyncData['108'])[0], np.shape(timeSyncData['109'])[0]])
         iterations = math.floor((minIterations - window_size)/window_shift) + 1
         for i in range(iterations):
