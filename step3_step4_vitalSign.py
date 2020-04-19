@@ -3,7 +3,10 @@ import numpy as np
 import math
 import matplotlib.pyplot as plt
 from scipy.fftpack import fft
+import pandas as pd
 
+breathRate = np.zeros((6, 7))
+rCnt, cCnt = -1, -1
 rangeRef = {'Radar 1': [0.8128, 1.8161], 'Radar 2': [1.3716, 3.0861], 'Radar 3': [1.1303, 2.8448]}
 fileRef = {'time': '/t_stmp.mat', 'bin': 'range_bins.mat', 'mag': 'rawscans.mat'}
 radarRef = {'time': 't_stmp', 'bin': 'range_bins', 'mag': 'rawscans'}
@@ -25,7 +28,9 @@ signalTrimRef = {
 pre_path = './DataSet/Vital Sign/'
 for radar in ['Radar 1', 'Radar 2', 'Radar 3']:
     for participant in ['BR_st1', 'BR_st2']:
+        rCnt += 1
         for pattern in ['browsing', 'fetal_left', 'fetal_right', 'freefall', 'left_turned', 'right_turned', 'soldier']:
+            cCnt += 1
             radarData = {}
             for files in fileRef:
                 radarData[files] = loadmat(pre_path + participant + '/' + radar + '/' + pattern + '/' + fileRef[files])[radarRef[files]]
@@ -58,7 +63,11 @@ for radar in ['Radar 1', 'Radar 2', 'Radar 3']:
             signalFFT = fft(np.multiply(signal, np.hamming(iterations)))
             freqs = np.multiply(np.linspace(0.0, 1.0/(2.0*sampleRate), iterations//2), 60)
             signalFFT = 2.0/iterations * np.abs(signalFFT[0:iterations//2])
+
             idx = np.where(freqs < 90)[0][-1]
+            freqs = freqs[:idx]
+            signalFFT = signalFFT[:idx]
+            breathRate[rCnt, cCnt] = str(freqs[np.argmax(signalFFT)])
             
             plt.figure()
             plt.subplot(211)
@@ -68,11 +77,17 @@ for radar in ['Radar 1', 'Radar 2', 'Radar 3']:
             plt.ylabel('Magnitude')
 
             plt.subplot(212)
-            plt.plot(freqs[:idx], signalFFT[:idx])
+            plt.plot(freqs, signalFFT)
             plt.title('Freq Domain - FFT Breathing Signal')
             plt.xlabel('Frequency (breaths per min)')
             plt.ylabel('Magnitude')
             plt.subplots_adjust(hspace=0.5)
+
             plt.suptitle(radar + ' Participant: ' + participant + '  Activity: ' + pattern)
             plt.savefig('./vital_sign_plots/' + radar + ' ' + participant + '_' + pattern + '.png', bbox_inches="tight")
             plt.close()
+
+        cCnt = -1
+
+df = pd.DataFrame(breathRate, columns=['browsing', 'fetal_left', 'fetal_right', 'freefall', 'left_turned', 'right_turned', 'soldier'], index=['Radar 1 BR_st1', 'Radar 1 BR_st2', 'Radar 2 BR_st1', 'Radar 2 BR_st2', 'Radar 3 BR_st1', 'Radar 3 BR_st2'])
+print(df)
