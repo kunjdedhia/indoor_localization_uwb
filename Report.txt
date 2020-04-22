@@ -1,0 +1,32 @@
+Step 1.
+Script - step1_visualize.m
+Result - waterfall_plot.png
+Participant - participant1
+Radar - R 103
+Pattern - 'U'
+The raw scans given to us is a two-dimensional array. Each row of the 2d matrix is represented by a scan in the plot. The participant entered the scene at UNIX Time 1547591086 and walks closer and closer to the radar and then, walks away from it. The participant leaves the environment at about UNIX Time 1547591096. The range of the participant is capture by the outer surface of the V-shaped envelope.
+
+Step 2.
+Script - step2_trilateration.py
+Result - localization_plots/
+The directory contains all the plots from localization for both the participants performing all patterns. Each plot represents the positions of the three radars, the ground truth pattern and the path computed by the trilateration algorithm
+
+Step 3.
+Script - step3_step4_vitalSign.py
+Result - vital_sign_plots/
+The directory contains all the plots to represent the raw breathing wave forms. This is performed for all Radars, both the participants and for all postures. Each plot contains two subplots. The first subplot represents a trimmed raw breathing wave form. The second subplot represents the FFT wave plot. The signal is multiplied by 60 to compute the breaths/min.
+
+Step 4.
+Script - step3_step4_vitalSign.py
+Result - 
+Summary of Estimated Breathing Rates (breaths/min):
+                 browsing  fetal_left  fetal_right   freefall  left_turned  right_turned    soldier
+Radar 1 BR_st1   3.007733   20.026066    21.341282  18.561628     1.501599      2.401418  20.014948
+Radar 1 BR_st2  20.058962    1.501597    14.014653   3.334917     7.073344     14.412745   1.540065
+Radar 2 BR_st1   0.953016    3.532099     1.112103  45.047236    74.467391      1.201164   6.217534
+Radar 2 BR_st2   5.011246   12.019835     1.500607   1.091431    20.953327      1.502084   6.669776
+Radar 3 BR_st1   2.401417   20.421074     1.715215   1.334711     1.201240      1.200993   1.333398
+Radar 3 BR_st2   4.504620    4.003501     1.714871   2.183873     1.715448      9.606294   2.001181
+
+These breathing rates were derived from the maximum peak of the FFT plot of the raw breathing wave form. From the estimated breathing rates, we can tell that the signal contains significant level of noise. Given that a majority of the FFT plots contain a maximum peak near 0 breaths/min, it is hard to find any correlations. Literature suggests that the average breathing rate of an adult is 12 - 20 breaths/min. However, it must be noticed that there are a number of postures for which the breathing rate is as expected for Radar 1. This can be justified since Radar 1 was the closest to the bed and hence, the least susceptible to gather noise in the signal. Radar 3 is the farthest away and mostly contains noise. A majority of its FFT peaks are near 1-2 breaths/min.
+

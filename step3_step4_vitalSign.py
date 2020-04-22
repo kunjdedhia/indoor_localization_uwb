@@ -70,6 +70,7 @@ for radar in ['Radar 1', 'Radar 2', 'Radar 3']:
 
             # FFT with the hamming function
             signalFFT = fft(np.multiply(signal, np.hamming(iterations)))
+            # multiply freq by 60 to compute breaths/min
             freqs = np.multiply(np.linspace(0.0, 1.0/(2.0*sampleRate), iterations//2), 60)
             signalFFT = 2.0/iterations * np.abs(signalFFT[0:iterations//2])
 
