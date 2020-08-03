@@ -1,10 +1,3 @@
-/** 
-  * @desc Assignment 4
-  * @name Kunj Dedhia kdedhia@umass.edu
-*/
-
-The following files have been included in the submission -
-
 1. step1_visualize.m - A Matlab script to visualize the water fall plot of the pattern 'U'  for participant1 using R 103
 
 2. waterfall_plot.png - The result from step1_visualize.m
